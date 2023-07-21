@@ -67,22 +67,6 @@ public class BlogServiceImpl implements BlogService {
             example.createCriteria().andEqualTo("blogId",blog.getBlogId());
             blogTagMapper.deleteByExample(example);
         }
-        //新增标签值
-        if (flag == 1) {
-            for (Tag tag : blog.getTags()) {
-                BlogTag blogTag = new BlogTag();
-                blogTag.setBlogId(blog.getBlogId());
-                blogTag.setTagId(tag.getTagId());
-                if (blogTagMapper.insert(blogTag) != 1) {
-                    return null;
-                }
-            }
-            //更新redis中BlogTags中相关的数据(由于一个博客可能对应无数个标签，故在此将redis中的BlogTags的key删除)
-            Blog blog1 = blogMapper.selectByPrimaryKey(blog.getBlogId());
-            blog.setCreateTime(blog1.getCreateTime());
-            blog.setViews(blog1.getViews());
-            return blog;
-        }
         return null;
     }
 
@@ -109,7 +93,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Page<Blog> selectBlogByKeyWords(String title, String typeId, String recommend) {
-        List<Blog> blogs = blogMapper.findBlogByKeyWords(title, typeId, recommend);
+        List<Blog> blogs = blogMapper.findBlogByKeyWords(title);
         return (Page<Blog>) blogs;
     }
 
@@ -136,7 +120,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Page<Blog> findBlogByKeyWords(String key) {
-        return (Page<Blog>) blogMapper.findBlogByKeyWords(key, null, null);
+        return (Page<Blog>) blogMapper.findBlogByTitle(key);
     }
 
     @Override

@@ -39,9 +39,12 @@ public interface BlogMapper extends Mapper<Blog>{
     List<Blog> findBlogAll();
 
 
-    List<Blog> findBlogByKeyWords(@Param(value = "title") String title,
-                                  @Param(value = "typeId") String typeId,
-                                  @Param(value = "recommend") String recommend);
+    List<Blog> findBlogByKeyWords(@Param(value = "title") String title);
+
+
+    @Select("select * from blog where title = #{title}")
+    @ResultMap(value = "blogMap")
+    List<Blog> findBlogByTitle(@Param(value = "title") String title);
 
 
     @Select("select * from blog where blog_id = #{id}")
