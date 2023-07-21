@@ -17,6 +17,8 @@ public interface BlogService {
 
     Blog findBlogByBlogId(Integer id);
 
+    Blog findBlogByTitle(String title);
+
     Blog addBlog(Blog blog);
 
     List<Blog> findAllBlogByPage();

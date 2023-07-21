@@ -43,28 +43,32 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Blog findBlogByBlogId(Integer id) {
-        //尝试从redis中获取
-            Blog selectBlogByBlogId = blogMapper.selectBlogByBlogId(String.valueOf(id));
-            log.info("将blog信息存入redis中，标题为" + selectBlogByBlogId.getTitle());
-            return selectBlogByBlogId;
+        Blog selectBlogByBlogId = blogMapper.selectBlogByBlogId(String.valueOf(id));
+        return selectBlogByBlogId;
+    }
+
+    @Override
+    public Blog findBlogByTitle(String title) {
+        Blog selectBlogByBlogId = blogMapper.selectBlogByTitle(title);
+        return selectBlogByBlogId;
     }
 
     @Transactional
     @Override
     public Blog addBlog(Blog blog) {
-        int flag ;
+        int flag;
         //新增
-        if (blog.getBlogId()==null) {
+        if (blog.getBlogId() == null) {
             blog.setCreateTime(new Date());
             blog.setUpdateTime(new Date());
             blog.setViews(0);
             flag = blogMapper.insert(blog);
-        }else {   //编辑
+        } else {   //编辑
             blog.setUpdateTime(new Date());
             flag = blogMapper.updateByPrimaryKeySelective(blog);
             //删除原有的Blog对应的标签值
             Example example = new Example(BlogTag.class);
-            example.createCriteria().andEqualTo("blogId",blog.getBlogId());
+            example.createCriteria().andEqualTo("blogId", blog.getBlogId());
             blogTagMapper.deleteByExample(example);
         }
         return null;
